@@ -33,3 +33,9 @@ Project3/x64/
 *.aps
 *.lastbuildstate
 *.FileListAbsolute.txt
+
+# Packaged release
+!/Release/
+/Release/*
+!/Release/Project3.exe
+!/Release/Shaders.hlsl

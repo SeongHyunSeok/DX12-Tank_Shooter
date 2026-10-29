@@ -16,7 +16,13 @@ DirectX 12로 구현한 3D 탱크 슈팅 프로젝트입니다. 탱크를 조작
 
 `C++` · `DirectX 12` · `HLSL` · `DirectXMath` · `DirectXCollision` · `Win32 API`
 
-## 빌드 및 실행
+## 실행 방법
+
+별도의 빌드 없이 `Release/Project3.exe`를 실행하면 됩니다.
+
+런타임 셰이더 컴파일에 필요한 `Shaders.hlsl`은 실행 파일과 같은 폴더에 유지해야 합니다.
+
+### 소스에서 빌드
 
 1. Visual Studio에서 `Project3.slnx`를 엽니다.
 2. 플랫폼을 `x64`, 구성을 `Debug` 또는 `Release`로 선택합니다.
