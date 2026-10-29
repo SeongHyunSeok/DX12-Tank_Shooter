@@ -14,12 +14,7 @@ DirectX 12로 구현한 3D 탱크 슈팅 프로젝트입니다. 탱크를 조작
 
 ## 기술 스택
 
-- **Language**: C++
-- **Graphics API**: DirectX 12, DXGI
-- **Shader**: HLSL
-- **Math & Collision**: DirectXMath, DirectXCollision
-- **Platform**: Windows, Win32 API
-- **Development**: Visual Studio, MSBuild
+`C++` · `DirectX 12` · `HLSL` · `DirectXMath` · `DirectXCollision` · `Win32 API`
 
 ## 빌드 및 실행
 
