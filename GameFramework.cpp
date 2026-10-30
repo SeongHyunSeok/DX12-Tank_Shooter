@@ -364,17 +364,21 @@ void CGameFramework::ProcessInput()
 {
 	static UCHAR pKeyBuffer[256];
 	DWORD dwDirection = 0;
+	const float fTimeElapsed = m_GameTimer.GetTimeElapsed();
+	const float fBodyRotation = 60.0f * fTimeElapsed;
+	const float fHeadRotation = 60.0f * fTimeElapsed;
+	const float fBarrelRotation = 6.0f * fTimeElapsed;
 	if (::GetKeyboardState(pKeyBuffer))
 	{
 		if (pKeyBuffer['W'] & 0xF0) dwDirection |= DIR_FORWARD;
 		if (pKeyBuffer['S'] & 0xF0) dwDirection |= DIR_BACKWARD;
-		if (pKeyBuffer['A'] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->BodyRotate(0.f, -1.0f, 0.0f);
-		if (pKeyBuffer['D'] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->BodyRotate(0.f, 1.0f, 0.0f);
+		if (pKeyBuffer['A'] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->BodyRotate(0.0f, -fBodyRotation, 0.0f);
+		if (pKeyBuffer['D'] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->BodyRotate(0.0f, fBodyRotation, 0.0f);
 
-		if (pKeyBuffer[VK_UP] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->BarrelRotate(-0.1f, 0.0f, 0.f);
-		if (pKeyBuffer[VK_DOWN] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->BarrelRotate(0.1f, 0.0f, 0.f);
-		if (pKeyBuffer[VK_LEFT] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->HeadRotate(0.f, -1.0f, 0.0f);
-		if (pKeyBuffer[VK_RIGHT] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->HeadRotate(0.f, 1.0f, 0.0f);
+		if (pKeyBuffer[VK_UP] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->BarrelRotate(-fBarrelRotation, 0.0f, 0.0f);
+		if (pKeyBuffer[VK_DOWN] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->BarrelRotate(fBarrelRotation, 0.0f, 0.0f);
+		if (pKeyBuffer[VK_LEFT] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->HeadRotate(0.0f, -fHeadRotation, 0.0f);
+		if (pKeyBuffer[VK_RIGHT] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->HeadRotate(0.0f, fHeadRotation, 0.0f);
 
 		if (pKeyBuffer[VK_SPACE] & 0xF0) static_cast<CTankPlayer*>(m_pPlayer)->FireBullet();
 	}
@@ -408,11 +412,11 @@ void CGameFramework::ProcessInput()
 	}
 	/*플레이어를 dwDirection 방향으로 이동한다(실제로는 속도 벡터를 변경한다). 
 	이동 거리는 시간에 비례하도록 한다. 플레이어의 이동 속력은 (50/초)로 가정한다.*/
-	if (dwDirection) m_pPlayer->Move (dwDirection, 50.0f * m_GameTimer.GetTimeElapsed(),
+	if (dwDirection) m_pPlayer->Move (dwDirection, 50.0f * fTimeElapsed,
 		true);
 
 	// 플레이어를 실제로 이동하고 카메라를 갱신한다. 중력과 마찰력의 영향을 속도 벡터에 적용한다. 
-	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+	m_pPlayer->Update(fTimeElapsed);
 }
 
 void CGameFramework::AnimateObjects()
@@ -512,7 +516,9 @@ void CGameFramework::FrameAdvance()
 	//dxgiPresentParameters.pScrollRect = NULL;
 	//dxgiPresentParameters.pScrollOffset = NULL;
 	//m_pdxgiSwapChain->Present1(1, 0, &dxgiPresentParameters);
-	m_pdxgiSwapChain->Present(0, 0);
+	// Synchronize presentation with the display refresh rate. This prevents the
+	// release build from rendering thousands of unused frames per second.
+	m_pdxgiSwapChain->Present(1, 0);
 
 	MoveToNextFrame();
 
